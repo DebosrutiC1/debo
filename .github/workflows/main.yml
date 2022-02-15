@@ -18,21 +18,4 @@ jobs:
         inlineScript: |
           az account show
           az group list
-    - name: "example-cron-action"
-      on:
-        schedule:
-          - cron:  '30 * * * *'    
-      jobs:
-        singleJobName:
-          runs-on: ubuntu-latest
-           steps:
-             - uses: actions/checkout@v2
-              with:
-                ref: ${{ env.DELAYED_JOB_CHECKOUT_REF }} 
-       - name: Do some work
-         run: echo $GITHUB_SHA
-       - name: Remove scheduled job
-         uses: cardinalby/unschedule-job-action@v1
-         with:
-          ghToken: ${{ secrets.WORKFLOWS_TOKEN }} 
-
+   
