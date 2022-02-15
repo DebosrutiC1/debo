@@ -1,21 +1,34 @@
+name: Subscitionlogin 
+
 on:
   push:
     branches: 
-      - main
-name: AzureConnect
+      - git-runner 
+
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+  run-demo-workflow:
+    runs-on: services-selfhosted
+    environment:
+      name: nonprod
     steps:
-    - name: Azure Login
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-    - name: Azure CLI script
-      uses: azure/CLI@v1
-      with:
-        azcliversion: 2.30.0
-        inlineScript: |
-          az account show
-          az group list
-   
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: 'git-runner' 
+          fetch-depth: 0
+      - name: print message 
+        run: |
+          echo "running from self hosted agent..!"
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+         creds: '{ "clientId": "${{ secrets.SP_CLIENT_ID }}", "clientSecret": "${{ secrets.SP_PASSWORD }}", "subscriptionId": "${{ secrets.SUBSCRIPTION_ID }}", "tenantId": "${{ secrets.AZURE_TENANT_ID }}"}'
+
+      - name: Azure CLI script
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.30.0
+          inlineScript: |
+            az account show
+            az storage -h
+            az group list
